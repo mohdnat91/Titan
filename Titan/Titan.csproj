@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{02133A04-115A-468D-AA93-52675E0325FA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Titan</RootNamespace>
+    <AssemblyName>Titan</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Default.cs" />
+    <Compile Include="Model\Factories\ComplexXRule.cs" />
+    <Compile Include="Model\Factories\PrimitiveXRule.cs" />
+    <Compile Include="Model\Factories\XFactory.cs" />
+    <Compile Include="Model\Factories\XRule.cs" />
+    <Compile Include="Utilities\XNavigator.cs" />
+    <Compile Include="Visitors\ConventionsVisitor.cs" />
+    <Compile Include="Visitors\DeserializationVisitor.cs" />
+    <Compile Include="Visitors\XVisitor.cs" />
+    <Compile Include="Conventions\XConvention%27.cs" />
+    <Compile Include="Conventions\XConvention.cs" />
+    <Compile Include="Attributes\XAttribute.cs" />
+    <Compile Include="Model\XCollection.cs" />
+    <Compile Include="Model\XComplex.cs" />
+    <Compile Include="Model\XDictionary.cs" />
+    <Compile Include="Model\XPrimitive.cs" />
+    <Compile Include="Model\XProperty.cs" />
+    <Compile Include="Model\XStructure.cs" />
+    <Compile Include="Model\XType.cs" />
+    <Compile Include="Model\XTypeBuilder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XDeserializer.cs" />
+    <Compile Include="XSerializer.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
