@@ -30,7 +30,7 @@ namespace Titan.Utilities
             current = current.Parent;
             return true;
         }
-
+        // TODO move to Pandora
         public bool Next(Func<XElement, bool> predicate)
         {
             XElement next = current.ElementsAfterSelf().FirstOrDefault(predicate);
