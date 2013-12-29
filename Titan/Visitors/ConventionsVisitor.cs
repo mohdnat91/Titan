@@ -17,7 +17,12 @@ namespace Titan.Visitors
             Conventions = conventions ?? new List<XConvention>();
         }
 
-        public override void Default(XStructure xstructure)
+        protected override void DefaultVisit(XStructure xstructure)
+        {
+            Conventions.ForEach(con => con.Apply(xstructure));
+        }
+
+        protected override void DefaultPreVisit(XStructure xstructure)
         {
             Conventions.ForEach(con => con.Apply(xstructure));
         }

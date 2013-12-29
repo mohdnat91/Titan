@@ -5,42 +5,58 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Titan.Model;
+using Titan.Utilities;
 
 namespace Titan.Visitors
 {
     public abstract class XVisitor
     {
-        //TODO replace with delegates.
-        protected Dictionary<Type, MethodInfo> map;
+        protected MethodGroup visitGroup;
+        protected MethodGroup preVisitGroup;
+        protected MethodGroup postVisitGroup;
 
         protected XVisitor()
         {
-            map = GetType().GetMethods().Where(m => m.Name == "Visit" && HasRightParameters(m.GetParameters()))
-                           .ToDictionary(m => m.GetParameters()[0].ParameterType);
-        }
-
-        private bool HasRightParameters(ParameterInfo[] parameters)
-        {
-            if (parameters.Length != 1) return false;
-            Type type = parameters[0].ParameterType;
-            return type != typeof(XStructure) && typeof(XStructure).IsAssignableFrom(type);
+            visitGroup = new MethodGroup(this, "Visit");
+            preVisitGroup = new MethodGroup(this, "PreVisit");
+            postVisitGroup = new MethodGroup(this, "PostVisit");
         }
 
         public void Visit(XStructure xstructure)
         {
-            if (map.ContainsKey(xstructure.GetType()))
+            if (!visitGroup.TryInvoke(xstructure))
             {
-                map[xstructure.GetType()].Invoke(this, new[] { xstructure });
-            }
-            else
-            {
-                Default(xstructure);
+                DefaultVisit(xstructure);
             }
         }
 
-        public virtual void Default(XStructure xstructure)
+        public void PreVisit(XStructure xstructure)
+        {
+            if (!preVisitGroup.TryInvoke(xstructure))
+            {
+                DefaultPreVisit(xstructure);
+            }
+        }
+
+        public void PostVisit(XStructure xstructure)
+        {
+            if (!postVisitGroup.TryInvoke(xstructure))
+            {
+                DefaultPostVisit(xstructure);
+            }
+        }
+
+        protected virtual void DefaultVisit(XStructure xstructure)
         {
             throw new InvalidOperationException();
+        }
+
+        protected virtual void DefaultPreVisit(XStructure xstructure)
+        {
+        }
+
+        protected virtual void DefaultPostVisit(XStructure xstructure)
+        {
         }
     }
 }

@@ -14,5 +14,11 @@ namespace Titan.Model
         {
             Properties = properties;
         }
+
+        public override void Accept(Visitors.XVisitor visitor)
+        {
+            base.Accept(visitor);
+            Properties.ForEach(p => p.Accept(visitor));
+        }
     }
 }

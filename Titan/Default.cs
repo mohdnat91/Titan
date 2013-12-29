@@ -17,6 +17,8 @@ namespace Titan
                 return new List<XRule>
                 {
                     new PrimitiveXRule(),
+                    new DictionaryXRule(),
+                    new CollectionXRule(),
                     new ComplexXRule()
                 };
             }
@@ -26,7 +28,15 @@ namespace Titan
         {
             get
             {
-                return new List<XConvention>();
+                return new List<XConvention>
+                {
+                    new XElementAttributeConvention(),
+                    new XAttributeAttributeConvention(),
+                    new XMemberAttributeConvention(),
+                    new XKeyAttributeConvention(),
+                    new XValueAttributeConvention(),
+                    new TypeResolutionXConvention()
+                };
             }
         }
     }

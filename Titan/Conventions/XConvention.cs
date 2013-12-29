@@ -4,11 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Titan.Model;
+using Titan.Utilities;
 
 namespace Titan.Conventions
 {
-    public interface XConvention
+    public abstract class XConvention
     {
-        void Apply(XStructure xstructure);
+        private MethodGroup methods;
+
+        public XConvention()
+        {
+            methods = new MethodGroup(this, "Apply");
+        }
+
+        public void Apply(XStructure xstructure)
+        {
+            methods.TryInvoke(xstructure);
+        }
     }
 }

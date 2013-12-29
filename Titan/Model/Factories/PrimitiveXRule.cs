@@ -11,7 +11,7 @@ namespace Titan.Model.Factories
         public bool AppliesTo(Type type)
         {
             // TODO change to IsPrimitive()
-            return type.IsPrimitive;
+            return type.IsPrimitive || type == typeof(string) || type == typeof(decimal);
         }
 
         public XType Produce(Type type, XFactory factory)

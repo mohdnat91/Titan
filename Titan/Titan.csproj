@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Pandora">
+      <HintPath>..\packages\Pandora.1.0.0.0\lib\net45\Pandora.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,18 +43,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\XAttributeAttribute.cs" />
+    <Compile Include="Attributes\XElementAttribute.cs" />
+    <Compile Include="Attributes\XMemberAttribute.cs" />
+    <Compile Include="Attributes\XValueAttribute.cs" />
+    <Compile Include="Conventions\TypeResolutionXConvention.cs" />
+    <Compile Include="Conventions\XAttributeAttributeConvention.cs" />
+    <Compile Include="Conventions\XElementAttributeConvention.cs" />
+    <Compile Include="Attributes\XKeyAttribute.cs" />
+    <Compile Include="Conventions\XKeyAttributeConvention.cs" />
+    <Compile Include="Conventions\XMemberAttributeConvention.cs" />
+    <Compile Include="Conventions\XValueAttributeConvention.cs" />
     <Compile Include="Default.cs" />
+    <Compile Include="Model\Factories\CollectionXRule.cs" />
     <Compile Include="Model\Factories\ComplexXRule.cs" />
+    <Compile Include="Model\Factories\DictionaryXRule.cs" />
     <Compile Include="Model\Factories\PrimitiveXRule.cs" />
     <Compile Include="Model\Factories\XFactory.cs" />
     <Compile Include="Model\Factories\XRule.cs" />
-    <Compile Include="Utilities\XNavigator.cs" />
+    <Compile Include="Navigation\XNavigator.cs" />
+    <Compile Include="Navigation\XSelector.cs" />
+    <Compile Include="Utilities\MethodGroup.cs" />
+    <Compile Include="Utilities\XObjectExtensions.cs" />
     <Compile Include="Visitors\ConventionsVisitor.cs" />
     <Compile Include="Visitors\DeserializationVisitor.cs" />
     <Compile Include="Visitors\XVisitor.cs" />
-    <Compile Include="Conventions\XConvention%27.cs" />
     <Compile Include="Conventions\XConvention.cs" />
-    <Compile Include="Attributes\XAttribute.cs" />
     <Compile Include="Model\XCollection.cs" />
     <Compile Include="Model\XComplex.cs" />
     <Compile Include="Model\XDictionary.cs" />
@@ -63,7 +81,9 @@
     <Compile Include="XDeserializer.cs" />
     <Compile Include="XSerializer.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

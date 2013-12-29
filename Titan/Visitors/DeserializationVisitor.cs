@@ -6,74 +6,96 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Titan.Model;
+using Titan.Navigation;
+using Pandora.Extensions;
 using Titan.Utilities;
 
 namespace Titan.Visitors
 {
     public class DeserializationVisitor : XVisitor
     {
-        private readonly Stack<object> _objects = new Stack<object>();
-        private readonly XNavigator _navigator;
+        private readonly Stack<object> objects = new Stack<object>();
+        private readonly XNavigator navigator;
 
-        public object Result { get { return _objects.Peek(); } }
+        public object Result { get { return objects.Peek(); } }
 
         public DeserializationVisitor(XElement root)
         {
-            _navigator = new XNavigator(root);
+            navigator = new XNavigator(root);
         }
 
         public void Visit(XPrimitive primitive)
         {
-            _objects.Push(_navigator.Current.Value.Parse(primitive.Type));
-        }
-
-        public void Visit(XProperty property)
-        {
-            object value = _objects.Pop();
-            object obj = _objects.Peek();
-            property.Property.SetValue(obj, value);
-            _navigator.Ascend();
+            objects.Push(navigator.Current.Value().Parse(primitive.Type));
         }
 
         public void Visit(XComplex complex)
         {
-            _objects.Push(Activator.CreateInstance(complex.Type));
-        }
-
-        public void Navigate(XProperty property)
-        {
-            _navigator.Descend(property.PropertySelector);
+            objects.Push(Activator.CreateInstance(complex.Type));
         }
 
         public void Visit(XCollection collection)
         {
-            dynamic list = Activator.CreateInstance(collection.Type);
-            _objects.Push(list);
-            _navigator.Descend(collection.MemberSelector);
+            navigator.Descend(collection.MemberSelector);
+
+            dynamic list = InstantiateCollection(collection);
             do
             {
                 collection.MemberXType.Accept(this);
-                list.Add((dynamic)_objects.Pop());
-            } while (_navigator.Next(collection.MemberSelector));
-            _navigator.Ascend();
-        }
-    }
+                list.Add((dynamic)objects.Pop());
+            } while (navigator.Next(collection.MemberSelector));
 
-    static class StringExtensions
-    {
-        public static object Parse(this string str, Type target)
+            objects.Push(collection.Type.IsArray ? list.ToArray() : list);
+
+            navigator.Ascend();
+        }
+
+        public void Visit(XDictionary dictionary)
         {
-            TypeConverter converter = TypeDescriptor.GetConverter(typeof(string));
-            if (converter.CanConvertTo(target))
+            navigator.Descend(dictionary.EntrySelector);
+
+            dynamic result = Activator.CreateInstance(dictionary.Type);
+            do
             {
-                return converter.ConvertTo(str, target);
-            }
-            converter = TypeDescriptor.GetConverter(target);
-            if (converter.CanConvertFrom(typeof(string)))
+                navigator.Descend(dictionary.KeySelector);
+                dictionary.KeyType.Accept(this);
+                dynamic key = (dynamic)objects.Pop();
+                navigator.Ascend();
+
+                navigator.Descend(dictionary.ValueSelector);
+                dictionary.ValueType.Accept(this);
+                dynamic value = (dynamic)objects.Pop();
+                navigator.Ascend();
+
+                result.Add(key, value);
+            } while (navigator.Next(dictionary.EntrySelector));
+
+            objects.Push(result);
+
+            navigator.Ascend();
+        }
+
+        public void PreVisit(XProperty property)
+        {
+            navigator.Descend(property.PropertySelector);
+        }
+
+        public void PostVisit(XProperty property)
+        {
+            object value = objects.Pop();
+            object obj = objects.Peek();
+            property.Property.SetValue(obj, value);
+            navigator.Ascend();
+        }
+
+        private dynamic InstantiateCollection(XCollection collection)
+        {
+            Type type = collection.Type;
+            if (type.IsArray)
             {
-                return converter.ConvertFromString(str);
+                type = typeof(List<>).MakeGenericType(collection.MemberXType.Type);
             }
-            return null;
+            return Activator.CreateInstance(type);
         }
     }
 }
